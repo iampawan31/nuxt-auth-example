@@ -44,6 +44,9 @@ export default {
    ** Nuxt.js dev-modules
    */
   buildModules: [],
+  axios: {
+    baseURL: 'http://cuckoos-backend.test',
+  },
   auth: {
     login: '/login',
     logout: '/',
@@ -51,12 +54,16 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: '/api/auth/login',
+            url: '/api/v1/auth/login',
             method: 'post',
             propertyName: 'token',
           },
-          logout: { url: '/api/auth/logout', method: 'post' },
-          user: { url: '/api/auth/user', method: 'get', propertyName: 'user' },
+          logout: { url: '/api/v1/auth/logout', method: 'post' },
+          user: {
+            url: '/api/v1/auth/me',
+            method: 'get',
+            propertyName: 'user',
+          },
         },
         tokenRequired: true,
         tokenType: 'Bearer',

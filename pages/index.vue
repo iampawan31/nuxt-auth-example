@@ -31,8 +31,8 @@
 export default {
   data() {
     return {
-      phone: '',
-      password: '',
+      phone: '8123565698',
+      password: '12345678',
     }
   },
   methods: {
