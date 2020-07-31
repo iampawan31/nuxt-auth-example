@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 export default {
   /*
    ** Nuxt rendering mode
@@ -45,7 +47,7 @@ export default {
    */
   buildModules: [],
   axios: {
-    baseURL: 'http://cuckoos-backend.test',
+    baseURL: process.env.BASE_URL,
   },
   auth: {
     login: '/login',
@@ -73,7 +75,7 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/axios', '@nuxtjs/auth'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/auth', '@nuxtjs/dotenv'],
   /*
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/

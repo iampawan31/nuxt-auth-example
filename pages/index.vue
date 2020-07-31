@@ -1,25 +1,30 @@
 <template>
   <div>
-    <div class="user-information" v-if="$auth.loggedIn">{{ $auth.user.email }}</div>
+    <div class="user-information" v-if="$auth.loggedIn">
+      <div>{{ $auth.user.email }}</div>
+      <button @click="$auth.logout()">Logout</button>
+    </div>
     <div class="login-page">
       <div class="form">
-        <form class="register-form">
-          <input type="text" placeholder="name" />
-          <input type="password" placeholder="password" />
-          <input type="text" placeholder="email address" />
+        <form v-if="!isLogin" class="register-form" v-on:submit.prevent="registerUser">
+          <input v-model="register.firstName" type="text" placeholder="first name" />
+          <input v-model="register.lastName" type="text" placeholder="last name" />
+          <input v-model="register.phone" type="text" placeholder="phone" />
+          <input v-model="register.email" type="text" placeholder="email address" />
+          <input v-model="register.password" type="password" placeholder="password" />
           <button>create</button>
           <p class="message">
             Already registered?
-            <a href="#">Sign In</a>
+            <a @click.prevent="isLogin = true">Sign In</a>
           </p>
         </form>
-        <form class="login-form" v-on:submit.prevent="loginUser">
+        <form v-else class="login-form" v-on:submit.prevent="loginUser">
           <input v-model="phone" type="text" placeholder="phone" />
           <input v-model="password" type="password" placeholder="password" />
           <button type="submit">login</button>
           <p class="message">
             Not registered?
-            <a href="#">Create an account</a>
+            <a @click.prevent="isLogin = false">Create an account</a>
           </p>
         </form>
       </div>
@@ -31,6 +36,14 @@
 export default {
   data() {
     return {
+      isLogin: true,
+      register: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        phone: '',
+      },
       phone: '8123565698',
       password: '12345678',
     }
@@ -42,6 +55,26 @@ export default {
         data: {
           phone: this.phone,
           password: this.password,
+        },
+      })
+    },
+    async registerUser() {
+      await this.$axios
+        .post('/api/v1/auth/register', {
+          first_name: this.register.firstName,
+          last_name: this.register.lastName,
+          phone: this.register.phone,
+          email: this.register.email,
+          password: this.register.password,
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+
+      this.$auth.loginWith('local', {
+        data: {
+          phone: this.register.phone,
+          password: this.register.password,
         },
       })
     },
@@ -106,9 +139,6 @@ export default {
   color: #4caf50;
   text-decoration: none;
 }
-.form .register-form {
-  display: none;
-}
 .container {
   position: relative;
   z-index: 1;
@@ -143,6 +173,15 @@ export default {
 .container .info span .fa {
   color: #ef3b3a;
 }
+
+.user-information {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 30px;
+  padding: 5px;
+  background-color: #f3f3f3;
+}
+
 body {
   background: #76b852; /* fallback for old browsers */
   background: -webkit-linear-gradient(right, #76b852, #8dc26f);
